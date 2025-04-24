@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Availability - Stylist Portal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">Manage Availability</h1>
+        <a href="{{ url_for('stylist.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-md text-sm">
+            Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Block Time Form -->
+        <div class="md:col-span-1">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Block Off Time</h2>
+                <p class="text-gray-600 mb-4">Block off time when you're not available for appointments.</p>
+                
+                <form method="POST" action="{{ url_for('stylist.availability') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                            {{ form.start_time(class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500", id="start_time_picker") }}
+                            {% if form.start_time.errors %}
+                                <div class="text-red-500 text-sm mt-1">
+                                    {% for error in form.start_time.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                            {{ form.end_time(class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500", id="end_time_picker") }}
+                            {% if form.end_time.errors %}
+                                <div class="text-red-500 text-sm mt-1">
+                                    {% for error in form.end_time.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">Reason (optional)</label>
+                            {{ form.reason(class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500", rows=3) }}
+                            {% if form.reason.errors %}
+                                <div class="text-red-500 text-sm mt-1">
+                                    {% for error in form.reason.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Block Time
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Blocked Times List -->
+        <div class="md:col-span-2">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="bg-indigo-50 py-3 px-6 border-b border-indigo-100">
+                    <h2 class="text-xl font-semibold text-indigo-800">Your Blocked Times</h2>
+                </div>
+                
+                {% if blocked_times %}
+                    <div class="divide-y divide-gray-200">
+                        {% for block in blocked_times %}
+                            <div class="p-6">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                                    <div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                                {{ block.start_time.strftime('%a, %b %d, %Y') }}
+                                            </span>
+                                            <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                                {{ block.start_time.strftime('%I:%M %p').lstrip('0') }} - {{ block.end_time.strftime('%I:%M %p').lstrip('0') }}
+                                            </span>
+                                        </div>
+                                        
+                                        {% if block.reason %}
+                                            <p class="text-gray-600 mt-2">
+                                                {{ block.reason }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mt-4 md:mt-0">
+                                        <form action="{{ url_for('stylist.remove_blocked_time', blocked_time_id=block.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this blocked time?');">
+                                            <button type="submit" class="text-red-600 hover:text-red-900">Remove</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-6 text-center">
+                        <p class="text-gray-500">You don't have any blocked time periods.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize datetime pickers
+        const startTimePicker = flatpickr("#start_time_picker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            time_24hr: true
+        });
+        
+        const endTimePicker = flatpickr("#end_time_picker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            time_24hr: true
+        });
+        
+        // Set end time to 1 hour after start time when start time is selected
+        document.getElementById("start_time_picker").addEventListener("change", function() {
+            const startDate = startTimePicker.selectedDates[0];
+            if (startDate) {
+                const endDate = new Date(startDate);
+                endDate.setHours(endDate.getHours() + 1);
+                endTimePicker.setDate(endDate);
+            }
+        });
+    });
+</script>
+{% endblock %}

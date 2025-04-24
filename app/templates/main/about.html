@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Hair Salon{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-center">About Our Salon</h1>
+    
+    <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+        <div class="md:flex">
+            <div class="md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1600&q=80" 
+                     alt="Salon Interior" class="w-full h-64 md:h-full object-cover">
+            </div>
+            <div class="p-6 md:w-1/2">
+                <h2 class="text-2xl font-bold mb-4">Our Story</h2>
+                <p class="text-gray-600 mb-4">
+                    Founded in 2010, our salon has been dedicated to providing exceptional hair care services
+                    in a welcoming, professional environment. What started as a small local business has grown
+                    into a beloved community institution known for quality and customer satisfaction.
+                </p>
+                <p class="text-gray-600">
+                    We believe that everyone deserves to look and feel their best, which is why we offer
+                    personalized services tailored to each client's unique style and needs.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+            <p class="text-gray-600 mb-6">
+                Our mission is to enhance the natural beauty of our clients by providing exceptional, 
+                personalized hair care services in a relaxing and welcoming atmosphere. We are committed to:
+            </p>
+            <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                <li>Using only premium, high-quality products</li>
+                <li>Continuously updating our techniques through ongoing education</li>
+                <li>Creating a positive experience for every client</li>
+                <li>Building lasting relationships with our community</li>
+                <li>Respecting individual styles and preferences</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-4">Why Choose Us?</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Expert Stylists</h3>
+                    <p class="text-gray-600">
+                        Our team consists of experienced professionals who are passionate about their craft
+                        and stay up-to-date with the latest trends and techniques.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Premium Products</h3>
+                    <p class="text-gray-600">
+                        We use only high-quality, professional-grade products to ensure the best results
+                        and maintain the health of your hair.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Comfortable Environment</h3>
+                    <p class="text-gray-600">
+                        Our salon provides a relaxing atmosphere where you can unwind while receiving
+                        top-notch service from our friendly staff.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Satisfaction Guaranteed</h3>
+                    <p class="text-gray-600">
+                        Your satisfaction is our priority. We work closely with each client to ensure
+                        they love their results every time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

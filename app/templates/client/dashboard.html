@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Dashboard - Hair Salon{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Your Dashboard</h1>
+        <a href="{{ url_for('client.book_appointment') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-200">
+            Book New Appointment
+        </a>
+    </div>
+    
+    <!-- Upcoming Appointments Section -->
+    <section class="mb-10">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-gray-100 py-3 px-6 border-b">
+                <h2 class="text-xl font-semibold">Upcoming Appointments</h2>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
+                {% for appointment in upcoming_appointments %}
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                            <div>
+                                <h3 class="text-lg font-bold">{{ appointment.service.name }}</h3>
+                                <p class="text-gray-600">
+                                    <span class="font-medium">Stylist:</span> {{ appointment.stylist.get_full_name() }}
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        {{ appointment.start_time.strftime('%a, %b %d, %Y') }}
+                                    </span>
+                                    <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {{ appointment.start_time.strftime('%I:%M %p').lstrip('0') }} - {{ appointment.end_time.strftime('%I:%M %p').lstrip('0') }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 md:mt-0 flex gap-2">
+                                <form action="{{ url_for('client.cancel_appointment', appointment_id=appointment.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                    <button type="submit" class="bg-red-100 hover:bg-red-200 text-red-800 py-1 px-3 rounded text-sm transition duration-200">
+                                        Cancel
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="p-6 text-center">
+                        <p class="text-gray-500">You don't have any upcoming appointments.</p>
+                        <a href="{{ url_for('client.book_appointment') }}" class="mt-2 inline-block text-indigo-600 hover:text-indigo-800">
+                            Book your first appointment
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Past Appointments Section -->
+    <section>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-gray-100 py-3 px-6 border-b">
+                <h2 class="text-xl font-semibold">Past Appointments</h2>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
+                {% for appointment in past_appointments %}
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                            <div>
+                                <h3 class="text-lg font-bold">{{ appointment.service.name }}</h3>
+                                <p class="text-gray-600">
+                                    <span class="font-medium">Stylist:</span> {{ appointment.stylist.get_full_name() }}
+                                </p>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        {{ appointment.start_time.strftime('%a, %b %d, %Y') }}
+                                    </span>
+                                    <span class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {{ appointment.start_time.strftime('%I:%M %p').lstrip('0') }} - {{ appointment.end_time.strftime('%I:%M %p').lstrip('0') }}
+                                    </span>
+                                    <span class="inline-flex items-center 
+                                        {% if appointment.status == 'completed' %}
+                                            bg-green-100 text-green-800
+                                        {% elif appointment.status == 'cancelled' %}
+                                            bg-red-100 text-red-800
+                                        {% elif appointment.status == 'no_show' %}
+                                            bg-yellow-100 text-yellow-800
+                                        {% else %}
+                                            bg-gray-100 text-gray-800
+                                        {% endif %}
+                                        text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        {{ appointment.status|capitalize }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 md:mt-0">
+                                <a href="{{ url_for('client.book_appointment') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Book Again
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="p-6 text-center">
+                        <p class="text-gray-500">You don't have any past appointments.</p>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if past_appointments %}
+                <div class="bg-gray-50 px-6 py-3 text-right">
+                    <a href="{{ url_for('client.appointments') }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+                        View all past appointments
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

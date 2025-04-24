@@ -1,0 +1,20 @@
+{% if available_times %}
+    <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        {% for time_slot in available_times %}
+            <button type="button" 
+                class="time-slot border rounded-md py-2 px-3 text-center text-sm bg-white hover:bg-gray-50 cursor-pointer transition-colors" 
+                data-datetime="{{ time_slot.datetime }}">
+                {{ time_slot.formatted_time }}
+            </button>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-4">
+        {% if error_message %}
+            <p class="text-red-500">{{ error_message }}</p>
+        {% else %}
+            <p class="text-gray-500">No available times for the selected date</p>
+            <p class="text-sm text-gray-400 mt-2">Please try a different date or stylist</p>
+        {% endif %}
+    </div>
+{% endif %}

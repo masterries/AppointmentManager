@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Stylist Dashboard - Hair Salon{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Stylist Dashboard</h1>
+        <div class="flex space-x-2">
+            <a href="{{ url_for('stylist.availability') }}" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium py-2 px-4 rounded-md transition duration-150">
+                Manage Availability
+            </a>
+            <a href="{{ url_for('stylist.clients') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-150">
+                View Clients
+            </a>
+        </div>
+    </div>
+    
+    <!-- Today's Appointments Section -->
+    <section class="mb-10">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-indigo-50 py-3 px-6 border-b border-indigo-100">
+                <h2 class="text-xl font-semibold text-indigo-800">Today's Appointments</h2>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
+                {% for appointment in today_appointments %}
+                    <div class="p-6 {% if loop.index % 2 == 0 %}bg-gray-50{% endif %}">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                            <div>
+                                <div class="flex items-center">
+                                    <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 text-indigo-800 text-lg font-medium mr-3">
+                                        {{ appointment.start_time.strftime('%H:%M') }}
+                                    </span>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-gray-900">{{ appointment.service.name }}</h3>
+                                        <p class="text-gray-600">
+                                            <span class="font-medium">Client:</span> {{ appointment.client.get_full_name() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-wrap gap-2 mt-3 ml-14">
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        {{ appointment.service.duration_minutes }} minutes
+                                    </span>
+                                    <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        ${{ appointment.service.price }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 md:mt-0 flex flex-col gap-2 items-end">
+                                <div class="flex gap-2">
+                                    <a href="{{ url_for('stylist.update_appointment_status', appointment_id=appointment.id) }}" class="inline-flex items-center bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-1 px-3 rounded text-sm transition duration-200">
+                                        Update Status
+                                    </a>
+                                    <a href="{{ url_for('stylist.client_notes', client_id=appointment.client.id) }}" class="inline-flex items-center bg-gray-50 hover:bg-gray-100 text-gray-700 py-1 px-3 rounded text-sm transition duration-200">
+                                        Client Notes
+                                    </a>
+                                </div>
+                                {% if appointment.notes %}
+                                    <div class="text-sm text-gray-500 mt-1 italic max-w-xs text-right">
+                                        "{{ appointment.notes }}"
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="p-6 text-center">
+                        <p class="text-gray-500">You don't have any appointments scheduled for today.</p>
+                        <p class="text-sm text-gray-400 mt-1">Enjoy your day off!</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Upcoming Appointments Section -->
+    <section>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-indigo-50 py-3 px-6 border-b border-indigo-100">
+                <h2 class="text-xl font-semibold text-indigo-800">Upcoming Appointments</h2>
+            </div>
+            
+            <div class="divide-y divide-gray-200">
+                {% for appointment in upcoming_appointments %}
+                    <div class="p-6 {% if loop.index % 2 == 0 %}bg-gray-50{% endif %}">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">{{ appointment.service.name }}</h3>
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        {{ appointment.start_time.strftime('%a, %b %d, %Y') }}
+                                    </span>
+                                    <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {{ appointment.start_time.strftime('%I:%M %p').lstrip('0') }} - {{ appointment.end_time.strftime('%I:%M %p').lstrip('0') }}
+                                    </span>
+                                </div>
+                                <p class="text-gray-600 mt-2">
+                                    <span class="font-medium">Client:</span> {{ appointment.client.get_full_name() }}
+                                </p>
+                            </div>
+                            
+                            <div class="mt-4 md:mt-0">
+                                <div class="flex gap-2">
+                                    <a href="{{ url_for('stylist.client_notes', client_id=appointment.client.id) }}" class="inline-flex items-center bg-gray-50 hover:bg-gray-100 text-gray-700 py-1 px-3 rounded text-sm transition duration-200">
+                                        Client Notes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="p-6 text-center">
+                        <p class="text-gray-500">You don't have any upcoming appointments scheduled.</p>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if upcoming_appointments %}
+                <div class="bg-gray-50 px-6 py-3 text-right">
+                    <a href="{{ url_for('stylist.appointments') }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+                        View all appointments →
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}My Clients - Stylist Portal{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">My Clients</h1>
+        <a href="{{ url_for('stylist.dashboard') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-md text-sm">
+            Back to Dashboard
+        </a>
+    </div>
+    
+    <!-- Clients list -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Info</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for client in clients %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                        <span class="text-indigo-600 font-medium">{{ client.first_name[0] }}{{ client.last_name[0] }}</span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ client.get_full_name() }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ client.email }}</div>
+                                {% if client.phone %}
+                                    <div class="text-sm text-gray-500">{{ client.phone }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ url_for('stylist.client_notes', client_id=client.id) }}" class="text-indigo-600 hover:text-indigo-900">View Notes</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    
+                    {% if clients|length == 0 %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                You don't have any clients yet. They will appear here after their first appointment.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

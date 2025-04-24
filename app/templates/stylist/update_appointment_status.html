@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Appointment Status - Stylist Portal{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-md">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="bg-indigo-50 py-3 px-6 border-b border-indigo-100">
+            <h2 class="text-xl font-semibold text-indigo-800">Update Appointment Status</h2>
+        </div>
+        
+        <div class="p-6">
+            <!-- Appointment details -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">{{ appointment.service.name }}</h3>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        {{ appointment.start_time.strftime('%a, %b %d, %Y') }}
+                    </span>
+                    <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ appointment.start_time.strftime('%I:%M %p').lstrip('0') }} - {{ appointment.end_time.strftime('%I:%M %p').lstrip('0') }}
+                    </span>
+                </div>
+                <p class="text-gray-600 mt-2">
+                    <span class="font-medium">Client:</span> {{ appointment.client.get_full_name() }}
+                </p>
+                <p class="text-gray-600">
+                    <span class="font-medium">Duration:</span> {{ appointment.service.duration_minutes }} minutes
+                </p>
+                <p class="text-gray-600">
+                    <span class="font-medium">Price:</span> ${{ appointment.service.price }}
+                </p>
+                
+                {% if appointment.notes %}
+                    <div class="mt-4 p-3 bg-gray-50 border border-gray-100 rounded">
+                        <p class="text-sm text-gray-600 italic">
+                            "{{ appointment.notes }}"
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="border-t border-gray-200 pt-6">
+                <form method="POST" action="{{ url_for('stylist.update_appointment_status', appointment_id=appointment.id) }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        {{ form.status(class="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500") }}
+                        {% if form.status.errors %}
+                            <div class="text-red-500 text-sm mt-1">
+                                {% for error in form.status.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-between mt-6">
+                        <a href="{{ url_for('stylist.appointments') }}" class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50">
+                            Cancel
+                        </a>
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md">
+                            Update Status
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hair Salon Booking{% endblock %}</title>
+    
+    <!-- TailwindCSS CDN (TECH-006) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HTMX for interactive elements (TECH-003) -->
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    
+    <!-- Alpine.js for minimal JS needs -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Custom styles -->
+    <style>
+        [x-cloak] { display: none !important; }
+        .flash-message {
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+        .flash-message.hide {
+            opacity: 0;
+        }
+    </style>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-indigo-700 shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ url_for('main.index') }}" class="text-white text-xl font-bold">Hair Salon</a>
+                    <div class="hidden md:flex space-x-4">
+                        <a href="{{ url_for('main.services') }}" class="text-indigo-100 hover:text-white transition">Services</a>
+                        <a href="{{ url_for('main.stylists') }}" class="text-indigo-100 hover:text-white transition">Stylists</a>
+                        <a href="{{ url_for('main.about') }}" class="text-indigo-100 hover:text-white transition">About</a>
+                        <a href="{{ url_for('main.contact') }}" class="text-indigo-100 hover:text-white transition">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.is_admin() %}
+                            <a href="{{ url_for('admin.dashboard') }}" class="text-indigo-100 hover:text-white transition">Admin Dashboard</a>
+                        {% elif current_user.is_stylist() %}
+                            <a href="{{ url_for('stylist.dashboard') }}" class="text-indigo-100 hover:text-white transition">Stylist Dashboard</a>
+                        {% elif current_user.is_client() %}
+                            <a href="{{ url_for('client.dashboard') }}" class="text-indigo-100 hover:text-white transition">My Dashboard</a>
+                        {% endif %}
+                        <a href="{{ url_for('auth.logout') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white py-2 px-4 rounded transition">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="text-indigo-100 hover:text-white transition">Login</a>
+                        <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white py-2 px-4 rounded transition">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Mobile menu (hidden by default) -->
+            <div class="md:hidden pb-4" id="mobile-menu" style="display: none;">
+                <a href="{{ url_for('main.services') }}" class="block text-indigo-100 hover:text-white py-2">Services</a>
+                <a href="{{ url_for('main.stylists') }}" class="block text-indigo-100 hover:text-white py-2">Stylists</a>
+                <a href="{{ url_for('main.about') }}" class="block text-indigo-100 hover:text-white py-2">About</a>
+                <a href="{{ url_for('main.contact') }}" class="block text-indigo-100 hover:text-white py-2">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto px-4 mt-4">
+                {% for category, message in messages %}
+                    <div class="flash-message p-4 mb-4 rounded-md {% if category == 'success' %}bg-green-100 text-green-800{% elif category == 'danger' %}bg-red-100 text-red-800{% elif category == 'warning' %}bg-yellow-100 text-yellow-800{% elif category == 'info' %}bg-blue-100 text-blue-800{% endif %}">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main content -->
+    <main class="flex-grow container mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 mt-auto">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Hair Salon</h3>
+                    <p class="mb-4">Your style is our passion. Professional hair care services for everyone.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
+                    <p class="mb-2">123 Style Street</p>
+                    <p class="mb-2">City, State 12345</p>
+                    <p class="mb-2">Phone: (123) 456-7890</p>
+                    <p>Email: info@hairsalon.com</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Hours</h3>
+                    <p class="mb-2">Monday - Friday: 9:00 AM - 7:00 PM</p>
+                    <p class="mb-2">Saturday: 10:00 AM - 5:00 PM</p>
+                    <p>Sunday: Closed</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center">
+                <p>&copy; {{ now.year }} Hair Salon. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for flash messages -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.classList.add('hide');
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 500);
+                }, 5000);
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.createElement('button');
+            mobileMenuButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>';
+            mobileMenuButton.className = 'md:hidden text-white';
+            mobileMenuButton.addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.style.display = mobileMenu.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            const nav = document.querySelector('nav .container .flex');
+            nav.appendChild(mobileMenuButton);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

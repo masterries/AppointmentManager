@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Hair Salon{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Users Summary Card -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Users</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total Clients:</span>
+                    <span class="font-medium">{{ total_clients }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total Stylists:</span>
+                    <span class="font-medium">{{ total_stylists }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Total Admins:</span>
+                    <span class="font-medium">{{ total_admins }}</span>
+                </div>
+                <div class="flex justify-between pt-2 border-t border-gray-200">
+                    <span class="text-gray-600 font-semibold">Total Users:</span>
+                    <span class="font-bold">{{ total_clients + total_stylists + total_admins }}</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('admin.users') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                    View All Users →
+                </a>
+            </div>
+        </div>
+
+        <!-- Appointments Summary Card -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Appointments</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Upcoming Appointments:</span>
+                    <span class="font-medium">{{ upcoming_appointments }}</span>
+                </div>
+                <div class="flex justify-between pt-2 border-t border-gray-200">
+                    <span class="text-gray-600 font-semibold">Total Appointments:</span>
+                    <span class="font-bold">{{ total_appointments }}</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('admin.appointments') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                    View All Appointments →
+                </a>
+            </div>
+        </div>
+
+        <!-- Services Summary Card -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Services</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Active Services:</span>
+                    <span class="font-medium">{{ active_services }}</span>
+                </div>
+                <div class="flex justify-between pt-2 border-t border-gray-200">
+                    <span class="text-gray-600 font-semibold">Total Services:</span>
+                    <span class="font-bold">{{ total_services }}</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="{{ url_for('admin.services') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                    Manage Services →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Quick Actions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <a href="{{ url_for('admin.create_user') }}" class="bg-indigo-100 hover:bg-indigo-200 p-4 rounded-lg text-center">
+                <div class="text-indigo-700 font-medium">Add New User</div>
+            </a>
+            <a href="{{ url_for('admin.create_service') }}" class="bg-indigo-100 hover:bg-indigo-200 p-4 rounded-lg text-center">
+                <div class="text-indigo-700 font-medium">Add New Service</div>
+            </a>
+            <a href="{{ url_for('admin.business_hours') }}" class="bg-indigo-100 hover:bg-indigo-200 p-4 rounded-lg text-center">
+                <div class="text-indigo-700 font-medium">Manage Hours</div>
+            </a>
+            <a href="{{ url_for('admin.holidays') }}" class="bg-indigo-100 hover:bg-indigo-200 p-4 rounded-lg text-center">
+                <div class="text-indigo-700 font-medium">Add Holiday</div>
+            </a>
+            <a href="{{ url_for('admin.audit_logs') }}" class="bg-indigo-100 hover:bg-indigo-200 p-4 rounded-lg text-center">
+                <div class="text-indigo-700 font-medium">Audit Logs</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Preview -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Analytics Preview</h2>
+        <p class="text-gray-600 mb-4">View detailed analytics including appointment statistics, revenue data, and service popularity.</p>
+        <a href="{{ url_for('admin.analytics') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md inline-block">
+            View Analytics
+        </a>
+    </div>
+</div>
+{% endblock %}

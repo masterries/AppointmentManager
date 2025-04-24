@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Hair Salon{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <h1 class="text-2xl font-bold mb-6 text-center">Create an Account</h1>
+    
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-4">
+                {{ form.email.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.email(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    {{ form.first_name.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                    {{ form.first_name(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                    {% if form.first_name.errors %}
+                        {% for error in form.first_name.errors %}
+                            <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div>
+                    {{ form.last_name.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                    {{ form.last_name(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                    {% if form.last_name.errors %}
+                        {% for error in form.last_name.errors %}
+                            <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                {{ form.phone.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.phone(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% if form.phone.errors %}
+                    {% for error in form.phone.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                {{ form.password.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.password(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="mb-6">
+                {{ form.confirm_password.label(class="block text-gray-700 text-sm font-bold mb-2") }}
+                {{ form.confirm_password(class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline") }}
+                {% if form.confirm_password.errors %}
+                    {% for error in form.confirm_password.errors %}
+                        <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center justify-center mb-4">
+                {{ form.submit(class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full") }}
+            </div>
+        </form>
+        
+        <div class="text-center border-t pt-4 mt-4">
+            <p class="text-sm text-gray-600">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-indigo-600 hover:text-indigo-800">Sign in</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">Manage Users</h1>
+        <a href="{{ url_for('admin.create_user') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md">
+            Add New User
+        </a>
+    </div>
+
+    <!-- Filter options -->
+    <div class="bg-white shadow-md rounded-lg p-4 mb-6 flex flex-wrap items-center gap-4">
+        <span class="font-medium text-gray-700">Filter by role:</span>
+        <a href="{{ url_for('admin.users', role='all') }}" 
+           class="px-3 py-1 rounded-full text-sm {% if role_filter == 'all' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800 hover:bg-gray-200{% endif %}">
+            All Users
+        </a>
+        <a href="{{ url_for('admin.users', role='client') }}" 
+           class="px-3 py-1 rounded-full text-sm {% if role_filter == 'client' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800 hover:bg-gray-200{% endif %}">
+            Clients
+        </a>
+        <a href="{{ url_for('admin.users', role='stylist') }}" 
+           class="px-3 py-1 rounded-full text-sm {% if role_filter == 'stylist' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800 hover:bg-gray-200{% endif %}">
+            Stylists
+        </a>
+        <a href="{{ url_for('admin.users', role='admin') }}" 
+           class="px-3 py-1 rounded-full text-sm {% if role_filter == 'admin' %}bg-indigo-100 text-indigo-800{% else %}bg-gray-100 text-gray-800 hover:bg-gray-200{% endif %}">
+            Admins
+        </a>
+    </div>
+    
+    <!-- Users table -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Name
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Email
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Role
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for user in users %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <span class="text-gray-600">{{ user.first_name[0] }}{{ user.last_name[0] }}</span>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ user.get_full_name() }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            {% if user.phone %}
+                                                {{ user.phone }}
+                                            {% else %}
+                                                No phone provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ user.email }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if user.role == 'admin' %}
+                                        bg-purple-100 text-purple-800
+                                    {% elif user.role == 'stylist' %}
+                                        bg-blue-100 text-blue-800
+                                    {% else %}
+                                        bg-green-100 text-green-800
+                                    {% endif %}
+                                ">
+                                    {{ user.role|capitalize }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if user.is_active %}
+                                        bg-green-100 text-green-800
+                                    {% else %}
+                                        bg-red-100 text-red-800
+                                    {% endif %}
+                                ">
+                                    {{ 'Active' if user.is_active else 'Inactive' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a href="{{ url_for('admin.update_user', user_id=user.id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    
+                    {% if users|length == 0 %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                No users found.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
